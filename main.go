@@ -16,7 +16,7 @@ import (
 const (
 	noToken    = "Please set TOKEN aenvironment variables\n"
 	noChatID   = "Please set CHAT_ID aenvironment variables\n"
-	noThredID  = "Please set THRED_ID aenvironment variables\n"
+	noThredID  = "*OPTIONAL* Set THRED_ID aenvironment variables\n"
 	noJsonURL  = "Please set JSON_URL aenvironment variables\n"
 	noUsername = "Please set USERNAME aenvironment variables\n"
 	noPassword = "Please set PASSWORD aenvironment variables\n"
@@ -52,17 +52,10 @@ func initTelegramBot() error {
 
 func sendTelegramMessage(message string) {
 	msg := tgbotapi.NewMessageToChannel(ChatID, message)
-	msg.ReplyToMessageID, _ = strconv.Atoi(ThredID)
-	bot.Send(msg)
-}
-
-func sendFullJSON(data map[string]interface{}) {
-	jsonData, err := json.MarshalIndent(data, "", "  ")
-	if err != nil {
-		fmt.Println("Error marshaling JSON:", err)
-		return
+	if ThredID != "" {
+		msg.ReplyToMessageID, _ = strconv.Atoi(ThredID)
 	}
-	sendTelegramMessage("Полученный JSON:\n" + string(jsonData))
+	bot.Send(msg)
 }
 
 func getTrunkStatus() {
